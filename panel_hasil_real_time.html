@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Real-Time - Grand Teacher Awards 2026</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { gold: { 400: '#facc15', 500: '#eab308' } },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], serif: ['Cinzel', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #06070a; color: #f3f4f6; }
+        .glass-panel { background: rgba(18, 20, 29, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8">
+
+    <div class="max-w-6xl mx-auto space-y-6">
+
+        <!-- HEADER -->
+        <header class="glass-panel p-6 rounded-3xl flex flex-col sm:flex-row justify-between items-center gap-4 border-purple-500/20">
+            <div>
+                <span class="text-xs text-purple-400 font-bold uppercase tracking-wider flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span> Live Real-time Feed
+                </span>
+                <h1 class="text-3xl font-bold text-white mt-1">Perolehan Suara Langsung</h1>
+            </div>
+            <div class="flex gap-3">
+                <a href="index.html" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">← Beranda Portal</a>
+                <a href="vote.html" class="px-4 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 text-xs font-semibold">🗳️ Vote Guru</a>
+            </div>
+        </header>
+
+        <!-- TOP LEADER CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass-panel p-6 rounded-3xl border border-pink-500/20 bg-gradient-to-br from-pink-950/20 via-slate-900/80 to-slate-950/80">
+                <p class="text-xs font-bold text-pink-400 uppercase tracking-wider mb-2">🔥 Peringkat 1 Guru Tergaul</p>
+                <h3 id="top-tergaul-name" class="text-3xl font-extrabold text-white">Memuat...</h3>
+                <p id="top-tergaul-count" class="text-lg font-bold text-pink-400 mt-1">0 Suara</p>
+            </div>
+            <div class="glass-panel p-6 rounded-3xl border border-amber-500/20 bg-gradient-to-br from-amber-950/20 via-slate-900/80 to-slate-950/80">
+                <p class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2">⭐ Peringkat 1 Guru Terbaik</p>
+                <h3 id="top-terbaik-name" class="text-3xl font-extrabold text-white">Memuat...</h3>
+                <p id="top-terbaik-count" class="text-lg font-bold text-amber-400 mt-1">0 Suara</p>
+            </div>
+        </div>
+
+        <!-- CHARTS SECTION -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="glass-panel p-6 rounded-3xl space-y-4">
+                <h3 class="font-bold text-pink-400">🔥 Top Guru Tergaul</h3>
+                <div class="h-64 relative"><canvas id="chartTergaul"></canvas></div>
+            </div>
+            <div class="glass-panel p-6 rounded-3xl space-y-4">
+                <h3 class="font-bold text-amber-400">⭐ Top Guru Terbaik</h3>
+                <div class="h-64 relative"><canvas id="chartTerbaik"></canvas></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3lFHsCOp_jPvE1033xQMbkS3aW54laSDr3Ae4TLMptZepaCmG_mGuVSjcbonF46BtiQ/exec";
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'evoting-guru-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "AIzaSyDemoConfigForVotingSystemOnly", projectId: "evoting-guru" };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const teacherNames = [
+            "Pak Wildan", "Pak masroni", "Pak Fakhri", "Pak Zailani", "Pak Fauzi", 
+            "Pak Ikrom", "Pak vickry", "Pak Hilmi", "Pak guntur", "Pak Suryadi", 
+            "Pak amar", "Pak uslani", "Pak Kiki", "Bu Devi", "Bu naila", "Bu Ririn", 
+            "Bu Kurnia", "Bu Syarifah", "Bu Ima", "Bu Widi", "Miss ilfa", 
+            "Miss Dilla", "Ustadzah hidyah", "Ustadz Syarif", "Ustadz Fata"
+        ];
+
+        let localVotes = {};
+        let chartTergaul, chartTerbaik;
+
+        window.addEventListener('load', () => {
+            initCharts();
+            fetchVotesFromSheet();
+            setupRealtime();
+        });
+
+        function initCharts() {
+            chartTergaul = new Chart(document.getElementById('chartTergaul').getContext('2d'), { type: 'bar', data: { labels: [], datasets: [{ data: [], backgroundColor: '#ec4899', borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: false } } });
+            chartTerbaik = new Chart(document.getElementById('chartTerbaik').getContext('2d'), { type: 'bar', data: { labels: [], datasets: [{ data: [], backgroundColor: '#eab308', borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: false } } });
+        }
+
+        async function fetchVotesFromSheet() {
+            try {
+                const res = await fetch(GOOGLE_SHEET_SCRIPT_URL + "?action=getVotes");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data)) {
+                        data.forEach(item => { if (item.id) localVotes[item.id] = item; });
+                        updateUI();
+                    }
+                }
+            } catch(e){}
+        }
+
+        function setupRealtime() {
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'votes'), (snapshot) => {
+                snapshot.forEach(docSnap => { localVotes[docSnap.id] = docSnap.data(); });
+                updateUI();
+            });
+        }
+
+        function updateUI() {
+            let systemVotes = { tergaul: {}, terbaik: {} };
+            teacherNames.forEach(n => { systemVotes.tergaul[n] = 0; systemVotes.terbaik[n] = 0; });
+
+            Object.values(localVotes).forEach(vote => {
+                if (vote.tergaul && teacherNames.includes(vote.tergaul)) systemVotes.tergaul[vote.tergaul]++;
+                if (vote.terbaik && teacherNames.includes(vote.terbaik)) systemVotes.terbaik[vote.terbaik]++;
+            });
+
+            const sortedTergaul = [...teacherNames].sort((a,b) => systemVotes.tergaul[b] - systemVotes.tergaul[a]);
+            const sortedTerbaik = [...teacherNames].sort((a,b) => systemVotes.terbaik[b] - systemVotes.terbaik[a]);
+
+            document.getElementById('top-tergaul-name').innerText = sortedTergaul[0] || '-';
+            document.getElementById('top-tergaul-count').innerText = `${systemVotes.tergaul[sortedTergaul[0]] || 0} Suara`;
+
+            document.getElementById('top-terbaik-name').innerText = sortedTerbaik[0] || '-';
+            document.getElementById('top-terbaik-count').innerText = `${systemVotes.terbaik[sortedTerbaik[0]] || 0} Suara`;
+
+            chartTergaul.data.labels = sortedTergaul.slice(0, 5);
+            chartTergaul.data.datasets[0].data = sortedTergaul.slice(0, 5).map(n => systemVotes.tergaul[n]);
+            chartTergaul.update();
+
+            chartTerbaik.data.labels = sortedTerbaik.slice(0, 5);
+            chartTerbaik.data.datasets[0].data = sortedTerbaik.slice(0, 5).map(n => systemVotes.terbaik[n]);
+            chartTerbaik.update();
+        }
+    </script>
+</body>
+</html>
