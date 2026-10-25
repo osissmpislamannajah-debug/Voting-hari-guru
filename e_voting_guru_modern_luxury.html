@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Teacher Awards - E-Voting Guru Modern</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                            glow: '#ffd700'
+                        },
+                        darkBg: '#090a0f',
+                        cardBg: 'rgba(23, 25, 35, 0.75)',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                        serif: ['Cinzel', 'Playfair Display', 'serif']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 15px rgba(234, 179, 8, 0.3)' },
+                            '100%': { boxShadow: '0 0 35px rgba(234, 179, 8, 0.7)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #06070a;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(147, 51, 234, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(234, 179, 8, 0.15) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #f3f4f6;
+        }
+
+        .gold-title {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, #fff 0%, #fef08a 30%, #eab308 70%, #854d0e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(234, 179, 8, 0.3);
+        }
+
+        .glass-panel {
+            background: rgba(18, 20, 29, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(30, 35, 51, 0.7), rgba(15, 18, 28, 0.8));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: rgba(234, 179, 8, 0.4);
+            box-shadow: 0 15px 30px -10px rgba(234, 179, 8, 0.25);
+        }
+
+        .gold-button {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            box-shadow: 0 4px 20px rgba(202, 138, 4, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .gold-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+            box-shadow: 0 6px 25px rgba(250, 204, 21, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 11, 16, 0.8);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(234, 179, 8, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(234, 179, 8, 0.6);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-gold-500 selection:text-black">
+
+    <!-- RUNNING ANNOUNCEMENT BANNER -->
+    <div class="bg-gradient-to-r from-amber-950/80 via-purple-950/80 to-amber-950/80 border-b border-amber-500/20 backdrop-blur-md py-2 overflow-hidden text-xs sm:text-sm font-medium text-amber-200/90">
+        <div class="flex whitespace-nowrap animate-[marquee_25s_linear_infinite] gap-8 justify-around items-center">
+            <span class="flex items-center gap-2">✨ <span>GRAND TEACHER AWARDS 2026</span> • Suara Anda Menentukan Guru Terbaik & Tergaul Tahun Ini!</span>
+            <span class="flex items-center gap-2">👑 Pastikan Anda Memberikan Hak Vote dengan Bijak</span>
+            <span class="flex items-center gap-2">⚡ SIFAT VOTING: Real-Time & Transparan Terhubung Cloud Server</span>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-8 flex-grow">
+
+        <!-- HEADER SECTION -->
+        <header class="text-center space-y-4 mb-10">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-semibold tracking-widest uppercase">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                Official E-Voting Platform
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl font-black gold-title tracking-tight leading-tight">
+                GRAND TEACHER AWARDS
+            </h1>
+            <p class="text-slate-400 text-sm sm:text-lg max-w-2xl mx-auto font-light">
+                Apresiasi setinggi-tingginya untuk dedikasi dan inspirasi para pendidik terbaik kita.
+            </p>
+
+            <!-- NAVIGATION TABS -->
+            <nav class="flex justify-center gap-3 pt-4">
+                <button id="nav-vote" onclick="switchTab('vote')" class="px-6 py-2.5 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 gold-button text-slate-950 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Area Vote
+                </button>
+                <button id="nav-results" onclick="switchTab('results')" class="px-6 py-2.5 rounded-xl font-semibold text-sm tracking-wide transition-all duration-300 glass-panel text-slate-300 hover:text-white hover:border-amber-500/50 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    Hasil Realtime
+                </button>
+                <button id="nav-admin" onclick="switchTab('admin')" class="px-6 py-2.5 rounded-xl font-semibold text-sm tracking-wide transition-all duration-300 glass-panel text-slate-400 hover:text-rose-400 hover:border-rose-500/30 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    Panel Admin
+                </button>
+            </nav>
+        </header>
+
+        <!-- STATUS VOTE USER -->
+        <div id="vote-status-banner" class="glass-panel rounded-2xl p-4 sm:p-5 mb-8 border border-amber-500/20 bg-gradient-to-r from-amber-950/20 via-slate-900/60 to-purple-950/20 relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl"></div>
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left relative z-10">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v1.341C7.67 7.165 6 9.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Status Hak Suara Anda</h2>
+                        <div id="status-desc" class="text-sm sm:text-base font-semibold text-slate-200 mt-0.5">
+                            Silakan tentukan 1 Guru Tergaul dan 1 Guru Terbaik pilihan Anda.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main>
+            <!-- PAGE 1: VOTING AREA -->
+            <section id="page-vote" class="space-y-6">
+                <!-- CATEGORY SELECTION TABS -->
+                <div class="flex justify-center p-1.5 bg-slate-900/80 rounded-2xl border border-slate-800 max-w-md mx-auto">
+                    <button id="tab-tergaul" onclick="switchCategory('tergaul')" class="flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-300 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
+                        🔥 Guru Tergaul
+                        <span id="badge-tergaul" class="hidden w-2 h-2 rounded-full bg-slate-950 animate-ping"></span>
+                    </button>
+                    <button id="tab-terbaik" onclick="switchCategory('terbaik')" class="flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-300 text-slate-400 hover:text-white flex items-center justify-center gap-2">
+                        ⭐ Guru Terbaik
+                        <span id="badge-terbaik" class="hidden w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                    </button>
+                </div>
+
+                <!-- SEARCH & FILTER -->
+                <div class="glass-panel p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="relative w-full sm:w-80">
+                        <svg class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" id="search-input" oninput="filterTeachers()" placeholder="Cari nama guru..." class="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500/60 focus:ring-1 focus:ring-amber-500/60 transition-all">
+                    </div>
+                    <div class="text-xs sm:text-sm font-medium text-slate-400 bg-slate-900/60 px-4 py-2 rounded-xl border border-slate-800 flex items-center gap-2 w-full sm:w-auto justify-center">
+                        Total Guru di Database: <span id="total-teachers-count" class="text-amber-400 font-bold">0</span>
+                    </div>
+                </div>
+
+                <!-- TEACHERS GRID -->
+                <div id="teachers-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Dynamic cards injected here -->
+                </div>
+            </section>
+
+            <!-- PAGE 2: REALTIME RESULTS -->
+            <section id="page-results" class="hidden space-y-8">
+                <!-- HEADER LEADERBOARD -->
+                <div class="text-center space-y-2">
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-100">Papan Skor & Perolehan Suara</h2>
+                    <p class="text-xs sm:text-sm text-slate-400">Pembaruan langsung secara otomatis tiap ada suara baru yang masuk</p>
+                </div>
+
+                <!-- TOP LEADERS CARDS -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- LEADER TERGAUL -->
+                    <div class="glass-panel p-6 rounded-3xl border border-pink-500/20 relative overflow-hidden bg-gradient-to-br from-pink-950/20 via-slate-900/80 to-slate-950/80">
+                        <div class="absolute top-0 right-0 p-4 opacity-10">
+                            <span class="text-8xl">👑</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-pink-400 text-xs font-bold uppercase tracking-wider mb-4">
+                            <span class="p-1.5 rounded-lg bg-pink-500/10 border border-pink-500/30">🔥 Kategori Tergaul</span>
+                            <span>• Memimpin Sementara</span>
+                        </div>
+                        <h3 id="top-tergaul-name" class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Belum Ada Suara</h3>
+                        <p id="top-tergaul-count" class="text-lg font-bold text-pink-400">0 Suara Perolehan</p>
+                    </div>
+
+                    <!-- LEADER TERBAIK -->
+                    <div class="glass-panel p-6 rounded-3xl border border-amber-500/20 relative overflow-hidden bg-gradient-to-br from-amber-950/20 via-slate-900/80 to-slate-950/80">
+                        <div class="absolute top-0 right-0 p-4 opacity-10">
+                            <span class="text-8xl">⭐</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider mb-4">
+                            <span class="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30">⭐ Kategori Terbaik</span>
+                            <span>• Memimpin Sementara</span>
+                        </div>
+                        <h3 id="top-terbaik-name" class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Belum Ada Suara</h3>
+                        <p id="top-terbaik-count" class="text-lg font-bold text-amber-400">0 Suara Perolehan</p>
+                    </div>
+                </div>
+
+                <!-- CHARTS & RANKINGS -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- TERGAUL CHART & LIST -->
+                    <div class="glass-panel p-6 rounded-3xl space-y-6">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                            <h3 class="font-bold text-lg text-pink-400 flex items-center gap-2">
+                                🔥 Grafik Top Guru Tergaul
+                            </h3>
+                            <span id="total-tergaul-votes" class="text-xs bg-pink-500/10 border border-pink-500/30 text-pink-300 px-3 py-1 rounded-full font-mono">Total: 0 Suara</span>
+                        </div>
+                        <div class="h-64 relative">
+                            <canvas id="chartTergaul"></canvas>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Peringkat Lengkap</h4>
+                            <div id="list-tergaul" class="space-y-2 max-h-56 overflow-y-auto pr-2">
+                                <!-- Dynamic List -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TERBAIK CHART & LIST -->
+                    <div class="glass-panel p-6 rounded-3xl space-y-6">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                            <h3 class="font-bold text-lg text-amber-400 flex items-center gap-2">
+                                ⭐ Grafik Top Guru Terbaik
+                            </h3>
+                            <span id="total-terbaik-votes" class="text-xs bg-amber-500/10 border border-amber-500/30 text-amber-300 px-3 py-1 rounded-full font-mono">Total: 0 Suara</span>
+                        </div>
+                        <div class="h-64 relative">
+                            <canvas id="chartTerbaik"></canvas>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Peringkat Lengkap</h4>
+                            <div id="list-terbaik" class="space-y-2 max-h-56 overflow-y-auto pr-2">
+                                <!-- Dynamic List -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 3: ADMIN PANEL -->
+            <section id="page-admin" class="hidden space-y-6">
+                <div class="glass-panel p-6 rounded-3xl flex flex-col sm:flex-row justify-between items-center gap-4 border-rose-500/20 bg-rose-950/10">
+                    <div>
+                        <div class="flex items-center gap-2 text-rose-400 text-xs font-bold uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                            Admin Access Mode
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-100 mt-1">Panel Kelola Admin</h2>
+                        <p class="text-xs text-slate-400">Kelola dan tinjau seluruh data suara yang masuk secara mendalam.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-3xl space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <input type="text" id="admin-search-input" oninput="renderAdminVoteList()" placeholder="Cari berdasarkan Voter ID / Nama..." class="w-full sm:w-72 px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200">
+                        <div class="text-xs text-slate-400 font-mono bg-slate-900 px-3 py-2 rounded-xl border border-slate-800">
+                            Total Entri: <span id="admin-total-docs" class="text-amber-400 font-bold">0</span>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                        <table class="w-full text-left text-xs sm:text-sm font-mono">
+                            <thead class="bg-slate-900/90 text-slate-400 uppercase text-[11px] tracking-wider border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3.5">ID Pemilih</th>
+                                    <th class="p-3.5">Pilihan Tergaul</th>
+                                    <th class="p-3.5">Pilihan Terbaik</th>
+                                    <th class="p-3.5">Waktu Vote</th>
+                                    <th class="p-3.5 text-center">Aksi Hapus</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-votes-tbody" class="divide-y divide-slate-800/60 bg-slate-900/30">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/60 backdrop-blur-md py-6 text-center text-xs text-slate-500 font-light mt-12">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p>© 2026 Grand Teacher Awards. Transparan, Akurat & Terpercaya.</p>
+            <p class="text-[11px] text-slate-600">Dirancang khusus dengan estetika Modern Luxury UI</p>
+        </div>
+    </footer>
+
+    <!-- MODAL CONFIRM DELETE ADMIN -->
+    <div id="admin-delete-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel max-w-sm w-full p-6 rounded-3xl border border-rose-500/30 space-y-4 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mx-auto text-xl">
+                ⚠️
+            </div>
+            <h3 class="text-lg font-bold text-white">Dimusnahkan Permanen?</h3>
+            <p id="delete-modal-text" class="text-xs text-slate-300 bg-slate-900 p-3 rounded-xl border border-slate-800 font-mono">
+                Suara akan dihapus dari database.
+            </p>
+            <div class="flex gap-3">
+                <button onclick="closeDeleteModal()" class="w-1/2 py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold">Batal</button>
+                <button id="confirm-delete-btn" class="w-1/2 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL KONFIRMASI VOTE -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel max-w-sm w-full p-6 rounded-3xl border border-amber-500/30 space-y-5 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto text-2xl">
+                ✨
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-white">Konfirmasi Pilihan Suara</h3>
+                <div id="modal-text" class="text-sm text-slate-300 mt-2 bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                    Apakah Anda yakin?
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeModal()" class="w-1/2 py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold">Batal</button>
+                <button id="modal-confirm-btn" class="w-1/2 py-2.5 rounded-xl gold-button text-slate-950 text-xs font-bold">Ya, Tetapkan!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900/90 text-amber-300 border border-amber-500/40 px-5 py-3.5 rounded-2xl shadow-2xl backdrop-blur-md font-medium text-sm z-50 flex items-center gap-3 transform translate-y-32 transition-all duration-300">
+        <span class="text-amber-400">✨</span>
+        <span id="toast-message">Pesan Notifikasi</span>
+    </div>
+
+    <!-- FIREBASE LOGIC & SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // URL Google Sheet Apps Script
+        const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3lFHsCOp_jPvE1033xQMbkS3aW54laSDr3Ae4TLMptZepaCmG_mGuVSjcbonF46BtiQ/exec"; 
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'evoting-guru-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyDemoConfigForVotingSystemOnly",
+            authDomain: "evoting-guru.firebaseapp.com",
+            projectId: "evoting-guru",
+            storageBucket: "evoting-guru.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        window.rawVotesDocs = [];
+        window.pendingDeleteId = null;
+
+        let localVotesStore = {};
+
+        const teacherNames = [
+            "Pak Wildan", "Pak masroni", "Pak Fakhri", "Pak Zailani", "Pak Fauzi", 
+            "Pak Ikrom", "Pak vickry", "Pak Hilmi", "Pak guntur", "Pak Suryadi", 
+            "Pak amar", "Pak uslani", "Pak Kiki", "Bu Devi", "Bu naila", "Bu Ririn", 
+            "Bu Kurnia", "Bu Syarifah", "Bu Ima", "Bu Widi", "Miss ilfa", 
+            "Miss Dilla", "Ustadzah hidyah", "Ustadz Syarif", "Ustadz Fata"
+        ];
+
+        window.currentTab = 'vote';
+        window.currentCategory = 'tergaul';
+        window.myVotes = { tergaul: null, terbaik: null };
+        window.pendingVote = null;
+        window.systemVotes = { tergaul: {}, terbaik: {} };
+
+        let chartTergaulInstance = null;
+        let chartTerbaikInstance = null;
+
+        window.addEventListener('load', async () => {
+            initSystemVotes();
+            initCharts();
+            renderTeachers();
+            updateVoteStatusBanner();
+
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {
+                console.warn("Auth initialization fallback:", err);
+            }
+
+            if (!currentUser) {
+                const randomId = 'voter_' + Math.random().toString(36).substr(2, 9);
+                currentUser = { uid: randomId };
+            }
+
+            setupRealtimeVotesListener();
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) currentUser = user;
+            });
+        });
+
+        function setupRealtimeVotesListener() {
+            const publicVotesRef = collection(db, 'artifacts', appId, 'public', 'data', 'votes');
+
+            onSnapshot(publicVotesRef, (snapshot) => {
+                resetSystemVotesToZero();
+                window.rawVotesDocs = [];
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const docId = docSnap.id;
+
+                    localVotesStore[docId] = data;
+
+                    if (currentUser && docId === currentUser.uid) {
+                        window.myVotes.tergaul = data.tergaul || null;
+                        window.myVotes.terbaik = data.terbaik || null;
+                    }
+                });
+
+                recalculateAllVotes();
+            }, (error) => {
+                console.warn("Firestore listener warning:", error);
+                recalculateAllVotes();
+            });
+        }
+
+        function recalculateAllVotes() {
+            resetSystemVotesToZero();
+            window.rawVotesDocs = [];
+
+            Object.keys(localVotesStore).forEach((docId) => {
+                const data = localVotesStore[docId];
+                if (!data) return;
+
+                window.rawVotesDocs.push({
+                    id: docId,
+                    tergaul: data.tergaul || null,
+                    terbaik: data.terbaik || null,
+                    updatedAt: data.updatedAt || null
+                });
+
+                if (data.tergaul && teacherNames.includes(data.tergaul)) {
+                    window.systemVotes.tergaul[data.tergaul] = (window.systemVotes.tergaul[data.tergaul] || 0) + 1;
+                }
+
+                if (data.terbaik && teacherNames.includes(data.terbaik)) {
+                    window.systemVotes.terbaik[data.terbaik] = (window.systemVotes.terbaik[data.terbaik] || 0) + 1;
+                }
+            });
+
+            renderTeachers();
+            updateVoteStatusBanner();
+            updateResultsUI();
+            renderAdminVoteList();
+        }
+
+        function initSystemVotes() {
+            resetSystemVotesToZero();
+        }
+
+        function resetSystemVotesToZero() {
+            window.systemVotes = { tergaul: {}, terbaik: {} };
+            teacherNames.forEach(name => {
+                window.systemVotes.tergaul[name] = 0;
+                window.systemVotes.terbaik[name] = 0;
+            });
+        }
+
+        window.switchTab = function(tab) {
+            window.currentTab = tab;
+            document.getElementById('page-vote').classList.add('hidden');
+            document.getElementById('page-results').classList.add('hidden');
+            document.getElementById('page-admin').classList.add('hidden');
+
+            document.getElementById('nav-vote').className = "px-6 py-2.5 rounded-xl font-semibold text-sm tracking-wide transition-all duration-300 glass-panel text-slate-300 hover:text-white flex items-center gap-2";
+            document.getElementById('nav-results').className = "px-6 py-2.5 rounded-xl font-semibold text-sm tracking-wide transition-all duration-300 glass-panel text-slate-300 hover:text-white flex items-center gap-2";
+            document.getElementById('nav-admin').className = "px-6 py-2.5 rounded-xl font-semibold text-sm tracking-wide transition-all duration-300 glass-panel text-slate-400 hover:text-rose-400 flex items-center gap-2";
+
+            if (tab === 'vote') {
+                document.getElementById('page-vote').classList.remove('hidden');
+                document.getElementById('nav-vote').className = "px-6 py-2.5 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 gold-button text-slate-950 flex items-center gap-2";
+            } else if (tab === 'results') {
+                document.getElementById('page-results').classList.remove('hidden');
+                document.getElementById('nav-results').className = "px-6 py-2.5 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 gold-button text-slate-950 flex items-center gap-2";
+                updateResultsUI();
+            } else if (tab === 'admin') {
+                document.getElementById('page-admin').classList.remove('hidden');
+                document.getElementById('nav-admin').className = "px-6 py-2.5 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 bg-rose-600 text-white flex items-center gap-2";
+                renderAdminVoteList();
+            }
+        };
+
+        window.renderAdminVoteList = function() {
+            const tbody = document.getElementById('admin-votes-tbody');
+            if (!tbody) return;
+
+            const search = (document.getElementById('admin-search-input')?.value || '').toLowerCase();
+            const filtered = window.rawVotesDocs.filter(d => 
+                d.id.toLowerCase().includes(search) || 
+                (d.tergaul && d.tergaul.toLowerCase().includes(search)) || 
+                (d.terbaik && d.terbaik.toLowerCase().includes(search))
+            );
+
+            document.getElementById('admin-total-docs').innerText = filtered.length;
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-500 font-sans">Tidak ada data ditemukan.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(docData => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/40 transition";
+
+                const formattedTime = docData.updatedAt ? new Date(docData.updatedAt).toLocaleTimeString('id-ID') : '-';
+
+                tr.innerHTML = `
+                    <td class="p-3.5 text-slate-300">${docData.id.substring(0, 8)}...</td>
+                    <td class="p-3.5 text-pink-400 font-semibold">${docData.tergaul || '-'}</td>
+                    <td class="p-3.5 text-amber-400 font-semibold">${docData.terbaik || '-'}</td>
+                    <td class="p-3.5 text-slate-400 text-xs">${formattedTime}</td>
+                    <td class="p-3.5 text-center">
+                        <button onclick="promptDeleteVote('${docData.id}')" class="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-xs font-semibold transition">Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        };
+
+        window.promptDeleteVote = function(docId) {
+            window.pendingDeleteId = docId;
+            document.getElementById('delete-modal-text').innerText = `ID Pemilih: ${docId}`;
+
+            const btn = document.getElementById('confirm-delete-btn');
+            btn.innerText = "Hapus Suara";
+            btn.disabled = false;
+            btn.onclick = executeDeleteVote;
+
+            document.getElementById('admin-delete-modal').classList.remove('hidden');
+        };
+
+        window.closeDeleteModal = function() {
+            document.getElementById('admin-delete-modal').classList.add('hidden');
+            window.pendingDeleteId = null;
+        };
+
+        async function executeDeleteVote() {
+            if (!window.pendingDeleteId) return;
+
+            const btn = document.getElementById('confirm-delete-btn');
+            btn.innerText = "Memproses...";
+            btn.disabled = true;
+
+            const targetId = window.pendingDeleteId;
+            delete localVotesStore[targetId];
+            recalculateAllVotes();
+
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'votes', targetId);
+                await deleteDoc(docRef);
+                showToast("Suara berhasil dihapus dari server!");
+            } catch (err) {
+                console.error(err);
+                showToast("Data dihapus secara lokal.");
+            } finally {
+                closeDeleteModal();
+            }
+        }
+
+        window.switchCategory = function(category) {
+            window.currentCategory = category;
+            
+            const tabTergaul = document.getElementById('tab-tergaul');
+            const tabTerbaik = document.getElementById('tab-terbaik');
+
+            if (category === 'tergaul') {
+                tabTergaul.className = "flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-300 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2";
+                tabTerbaik.className = "flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-300 text-slate-400 hover:text-white flex items-center justify-center gap-2";
+            } else {
+                tabTerbaik.className = "flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-300 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2";
+                tabTergaul.className = "flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-300 text-slate-400 hover:text-white flex items-center justify-center gap-2";
+            }
+
+            renderTeachers();
+        };
+
+        window.filterTeachers = function() {
+            renderTeachers();
+        };
+
+        function renderTeachers() {
+            const grid = document.getElementById('teachers-grid');
+            if (!grid) return;
+
+            const searchQuery = (document.getElementById('search-input')?.value || '').toLowerCase();
+            const filtered = teacherNames.filter(name => name.toLowerCase().includes(searchQuery));
+            document.getElementById('total-teachers-count').innerText = filtered.length;
+
+            grid.innerHTML = '';
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500 font-light">Tidak ada nama guru yang sesuai pencarian.</div>`;
+                return;
+            }
+
+            const chosenTeacherForCategory = window.myVotes[window.currentCategory];
+
+            filtered.forEach(name => {
+                const isSelected = chosenTeacherForCategory === name;
+
+                const card = document.createElement('div');
+                card.className = `glass-card p-5 rounded-2xl flex flex-col justify-between space-y-4 border ${
+                    isSelected ? 'border-amber-500/80 bg-gradient-to-b from-amber-950/20 to-slate-900/90' : 'border-slate-800'
+                }`;
+
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold text-lg">
+                                👨‍🏫
+                            </div>
+                            ${isSelected ? '<span class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">★ Pilihan Anda</span>' : ''}
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-100 text-lg group-hover:text-amber-300 transition">${name}</h4>
+                            <p class="text-xs text-slate-400 mt-0.5">Kandidat ${window.currentCategory === 'tergaul' ? '🔥 Guru Tergaul' : '⭐ Guru Terbaik'}</p>
+                        </div>
+                    </div>
+                    <button onclick="promptVote('${name}')" ${isSelected ? 'disabled' : ''} class="w-full py-2.5 rounded-xl font-bold text-xs tracking-wider uppercase transition-all duration-300 ${
+                        isSelected 
+                            ? 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed' 
+                            : 'gold-button text-slate-950'
+                    }">
+                        ${isSelected ? '✔ Terpilih' : 'Vote Guru Ini'}
+                    </button>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        window.promptVote = function(teacherName) {
+            window.pendingVote = {
+                category: window.currentCategory,
+                teacherName: teacherName
+            };
+
+            const modalText = document.getElementById('modal-text');
+            const categoryLabel = window.currentCategory === 'tergaul' ? 'Guru Tergaul' : 'Guru Terbaik';
+            modalText.innerHTML = `Apakah Anda yakin ingin menetapkan <strong class="text-amber-300">${teacherName}</strong> sebagai <strong class="text-amber-300">${categoryLabel}</strong>?`;
+
+            const confirmBtn = document.getElementById('modal-confirm-btn');
+            confirmBtn.disabled = false;
+            confirmBtn.onclick = confirmVote;
+
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+            window.pendingVote = null;
+        };
+
+        async function confirmVote() {
+            if (!window.pendingVote) return;
+
+            const confirmBtn = document.getElementById('modal-confirm-btn');
+            confirmBtn.disabled = true;
+            confirmBtn.innerText = "Memproses...";
+
+            const { category, teacherName } = window.pendingVote;
+
+            window.myVotes[category] = teacherName;
+
+            closeModal();
+            confirmBtn.innerText = "Ya, Tetapkan!";
+
+            const voterId = currentUser ? currentUser.uid : ('voter_' + Math.random().toString(36).substr(2, 9));
+            if (!currentUser) currentUser = { uid: voterId };
+
+            if (!localVotesStore[voterId]) {
+                localVotesStore[voterId] = { tergaul: null, terbaik: null, updatedAt: new Date().toISOString() };
+            }
+            localVotesStore[voterId][category] = teacherName;
+            localVotesStore[voterId].updatedAt = new Date().toISOString();
+
+            recalculateAllVotes();
+
+            sendVoteToGoogleSheet(category, teacherName);
+
+            try {
+                const userVoteDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'votes', voterId);
+                await setDoc(userVoteDocRef, {
+                    tergaul: localVotesStore[voterId].tergaul || null,
+                    terbaik: localVotesStore[voterId].terbaik || null,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+
+                showToast(`Berhasil memilih ${teacherName}!`);
+            } catch (error) {
+                console.warn(error);
+                showToast(`Vote tersimpan secara lokal.`);
+            }
+        }
+
+        function sendVoteToGoogleSheet(category, teacherName) {
+            if (!GOOGLE_SHEET_SCRIPT_URL || GOOGLE_SHEET_SCRIPT_URL.includes("PASTE_YOUR")) return;
+
+            fetch(GOOGLE_SHEET_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ category: category, teacherName: teacherName })
+            }).catch(err => console.error(err));
+        }
+
+        function updateVoteStatusBanner() {
+            const hasVotedTergaul = !!window.myVotes.tergaul;
+            const hasVotedTerbaik = !!window.myVotes.terbaik;
+
+            const desc = document.getElementById('status-desc');
+            const badgeTergaul = document.getElementById('badge-tergaul');
+            const badgeTerbaik = document.getElementById('badge-terbaik');
+
+            if (hasVotedTergaul) badgeTergaul?.classList.remove('hidden');
+            if (hasVotedTerbaik) badgeTerbaik?.classList.remove('hidden');
+
+            if (hasVotedTergaul && hasVotedTerbaik) {
+                desc.innerHTML = `Selesai! Pilihan Tergaul: <span class="text-amber-400 font-bold">${window.myVotes.tergaul}</span> • Terbaik: <span class="text-amber-400 font-bold">${window.myVotes.terbaik}</span>`;
+            } else if (hasVotedTergaul) {
+                desc.innerHTML = `Pilihan Tergaul: <span class="text-amber-400 font-bold">${window.myVotes.tergaul}</span> (Belum memilih Guru Terbaik)`;
+            } else if (hasVotedTerbaik) {
+                desc.innerHTML = `Pilihan Terbaik: <span class="text-amber-400 font-bold">${window.myVotes.terbaik}</span> (Belum memilih Guru Tergaul)`;
+            }
+        }
+
+        function initCharts() {
+            const ctxTergaul = document.getElementById('chartTergaul')?.getContext('2d');
+            const ctxTerbaik = document.getElementById('chartTerbaik')?.getContext('2d');
+
+            if (!ctxTergaul || !ctxTerbaik) return;
+
+            chartTergaulInstance = new Chart(ctxTergaul, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Perolehan Suara',
+                        data: [],
+                        backgroundColor: '#ec4899',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    }
+                }
+            });
+
+            chartTerbaikInstance = new Chart(ctxTerbaik, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Perolehan Suara',
+                        data: [],
+                        backgroundColor: '#eab308',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    }
+                }
+            });
+        }
+
+        function updateResultsUI() {
+            const sortedTergaul = [...teacherNames].sort((a, b) => (window.systemVotes.tergaul[b] || 0) - (window.systemVotes.tergaul[a] || 0));
+            const sortedTerbaik = [...teacherNames].sort((a, b) => (window.systemVotes.terbaik[b] || 0) - (window.systemVotes.terbaik[a] || 0));
+
+            const totalTergaul = Object.values(window.systemVotes.tergaul).reduce((a, b) => a + b, 0);
+            const totalTerbaik = Object.values(window.systemVotes.terbaik).reduce((a, b) => a + b, 0);
+
+            document.getElementById('total-tergaul-votes').innerText = `Total: ${totalTergaul} Suara`;
+            document.getElementById('total-terbaik-votes').innerText = `Total: ${totalTerbaik} Suara`;
+
+            const topTergaulName = sortedTergaul[0];
+            const topTergaulVotes = window.systemVotes.tergaul[topTergaulName] || 0;
+            document.getElementById('top-tergaul-name').innerText = topTergaulVotes > 0 ? topTergaulName : 'Belum Ada Suara';
+            document.getElementById('top-tergaul-count').innerText = `${topTergaulVotes} Suara Perolehan`;
+
+            const topTerbaikName = sortedTerbaik[0];
+            const topTerbaikVotes = window.systemVotes.terbaik[topTerbaikName] || 0;
+            document.getElementById('top-terbaik-name').innerText = topTerbaikVotes > 0 ? topTerbaikName : 'Belum Ada Suara';
+            document.getElementById('top-terbaik-count').innerText = `${topTerbaikVotes} Suara Perolehan`;
+
+            if (chartTergaulInstance && chartTerbaikInstance) {
+                const topChartTergaul = sortedTergaul.slice(0, 5);
+                chartTergaulInstance.data.labels = topChartTergaul;
+                chartTergaulInstance.data.datasets[0].data = topChartTergaul.map(n => window.systemVotes.tergaul[n] || 0);
+                chartTergaulInstance.update();
+
+                const topChartTerbaik = sortedTerbaik.slice(0, 5);
+                chartTerbaikInstance.data.labels = topChartTerbaik;
+                chartTerbaikInstance.data.datasets[0].data = topChartTerbaik.map(n => window.systemVotes.terbaik[n] || 0);
+                chartTerbaikInstance.update();
+            }
+
+            renderRankList('list-tergaul', sortedTergaul, window.systemVotes.tergaul);
+            renderRankList('list-terbaik', sortedTerbaik, window.systemVotes.terbaik);
+        }
+
+        function renderRankList(elementId, sortedNames, voteObj) {
+            const container = document.getElementById(elementId);
+            if (!container) return;
+            container.innerHTML = '';
+
+            sortedNames.forEach((name, index) => {
+                const votes = voteObj[name] || 0;
+                const item = document.createElement('div');
+                item.className = 'flex justify-between items-center p-2.5 rounded-xl bg-slate-900/50 border border-slate-800 text-xs font-medium';
+                item.innerHTML = `
+                    <span class="text-slate-300"><strong class="text-amber-400 mr-2">#${index + 1}</strong> ${name}</span>
+                    <span class="text-amber-300 font-bold bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md">${votes} Suara</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            if (!toast || !toastMessage) return;
+
+            toastMessage.innerText = message;
+            toast.classList.remove('translate-y-32');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-32');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
