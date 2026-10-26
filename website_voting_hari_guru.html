@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresiasi Hari Guru Nasional - Prototype Voting Guru Tergaul & Terbaik</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Poppins) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-rose-500 selection:text-white">
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Logo / Brand -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="scrollToTop()">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center text-white shadow-md shadow-rose-500/20">
+                        <i data-lucide="award" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold bg-gradient-to-r from-amber-600 via-rose-600 to-indigo-600 bg-clip-text text-transparent block leading-tight">Hari Guru Nasional</span>
+                        <span class="text-xs text-slate-500 font-medium hidden sm:block">Apresiasi Guru Tergaul & Terbaik</span>
+                    </div>
+                </div>
+
+                <!-- Nav Links -->
+                <div class="hidden md:flex items-center space-x-1 lg:space-x-6 text-sm font-semibold text-slate-600">
+                    <a href="#kategori" class="px-3 py-2 rounded-lg hover:text-rose-600 hover:bg-rose-50 transition">Kategori Voting</a>
+                    <a href="#leaderboard" class="px-3 py-2 rounded-lg hover:text-rose-600 hover:bg-rose-50 transition">Perolehan Suara</a>
+                    <a href="#ucapan" class="px-3 py-2 rounded-lg hover:text-rose-600 hover:bg-rose-50 transition">Papan Ucapan</a>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center space-x-3">
+                    <!-- Standalone Mode Badge -->
+                    <div class="hidden sm:flex items-center space-x-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                        <span>Mode Prototype Standalone</span>
+                    </div>
+
+                    <button onclick="openAdminModal()" class="flex items-center space-x-1 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-slate-500"></i>
+                        <span>Admin</span>
+                    </button>
+                    <a href="#kategori" class="bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-semibold text-sm px-4 py-2 rounded-xl shadow-md shadow-rose-500/20 hover:shadow-lg transition transform active:scale-95 flex items-center space-x-2">
+                        <i data-lucide="vote" class="w-4 h-4"></i>
+                        <span>Mulai Vote</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Header Section -->
+    <header class="relative gradient-hero text-white overflow-hidden py-16 sm:py-24">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="max-w-3xl mx-auto">
+                <div class="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 text-xs sm:text-sm font-medium mb-6 text-amber-300 animate-pulse">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    <span>Apresiasi Hari Guru Nasional</span>
+                </div>
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6">
+                    Pilih Guru <span class="bg-gradient-to-r from-amber-300 via-rose-300 to-indigo-300 bg-clip-text text-transparent">Tergaul</span> & <span class="bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent">Terbaik</span>
+                </h1>
+                <p class="text-slate-300 text-base sm:text-lg mb-8 leading-relaxed font-light">
+                    Berikan suaramu untuk 25 guru hebat sekolah kita! Dukung guru favoritmu dan sampaikan pesan terima kasih penuh kehangatan dalam prototype interaktif ini.
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#kategori" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-bold rounded-2xl shadow-xl shadow-rose-500/30 hover:shadow-2xl transition transform hover:-translate-y-0.5 flex items-center justify-center space-x-2">
+                        <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                        <span>Vote Sekarang</span>
+                    </a>
+                    <a href="#ucapan" class="w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold rounded-2xl backdrop-blur-md transition flex items-center justify-center space-x-2">
+                        <i data-lucide="heart" class="w-5 h-5 text-rose-400"></i>
+                        <span>Kirim Pesan</span>
+                    </a>
+                </div>
+
+                <!-- Quick Stats Counter -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-12 pt-10 border-t border-white/10 text-center">
+                    <div class="p-3 bg-white/5 rounded-xl backdrop-blur-sm border border-white/10">
+                        <p class="text-2xl sm:text-3xl font-extrabold text-amber-400" id="stat-total-votes">0</p>
+                        <p class="text-xs text-slate-300 font-medium mt-1">Total Suara Masuk</p>
+                    </div>
+                    <div class="p-3 bg-white/5 rounded-xl backdrop-blur-sm border border-white/10">
+                        <p class="text-2xl sm:text-3xl font-extrabold text-rose-400" id="stat-total-messages">0</p>
+                        <p class="text-xs text-slate-300 font-medium mt-1">Pesan & Ucapan</p>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1 p-3 bg-white/5 rounded-xl backdrop-blur-sm border border-white/10">
+                        <p class="text-2xl sm:text-3xl font-extrabold text-emerald-400">25</p>
+                        <p class="text-xs text-slate-300 font-medium mt-1">Kandidat Guru</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 flex-grow">
+
+        <!-- CATEGORIES & VOTING SECTION -->
+        <section id="kategori" class="scroll-mt-20">
+            <div class="text-center max-w-2xl mx-auto mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 flex items-center justify-center gap-2">
+                    <i data-lucide="award" class="text-amber-500 w-8 h-8"></i>
+                    <span>Kategori Voting</span>
+                </h2>
+                <p class="text-slate-600 mt-2 text-sm sm:text-base">Pilih kategori di bawah ini, cari nama guru, dan berikan 1 suara terbaikmu di masing-masing kategori.</p>
+            </div>
+
+            <!-- Category Switcher Buttons -->
+            <div class="flex justify-center space-x-3 mb-8">
+                <button onclick="switchCategory('tergaul')" id="tab-tergaul" class="px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-200 flex items-center space-x-2">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    <span>Guru Tergaul</span>
+                </button>
+                <button onclick="switchCategory('terbaik')" id="tab-terbaik" class="px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-200 flex items-center space-x-2">
+                    <i data-lucide="star" class="w-5 h-5"></i>
+                    <span>Guru Terbaik</span>
+                </button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="max-w-md mx-auto mb-8 relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </div>
+                <input type="text" id="search-input" oninput="handleSearch()" placeholder="Cari nama guru (misal: Pak Wildan, Bu Devi)..." class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-sm">
+            </div>
+
+            <!-- Candidates Grid -->
+            <div id="candidates-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Dynamic candidate cards populated via JavaScript -->
+            </div>
+        </section>
+
+        <!-- LIVE LEADERBOARD SECTION -->
+        <section id="leaderboard" class="scroll-mt-20 bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-xl shadow-slate-100">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-100">
+                <div>
+                    <div class="inline-flex items-center space-x-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+                        <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                        <span>Hasil Perolehan Suara Real-time</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Leaderboard Perolehan Suara</h2>
+                    <p class="text-slate-500 text-sm mt-1">Peringkat dan persentase voting secara langsung.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <select id="leaderboard-category-filter" onchange="renderLeaderboard()" class="bg-slate-50 border border-slate-300 text-slate-700 text-sm rounded-xl focus:ring-rose-500 focus:border-rose-500 p-2.5 font-semibold cursor-pointer">
+                        <option value="tergaul">Kategori: Guru Tergaul</option>
+                        <option value="terbaik">Kategori: Guru Terbaik</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Leaderboard Content -->
+            <div id="leaderboard-content" class="space-y-3">
+                <!-- Dynamic progress bars -->
+            </div>
+        </section>
+
+        <!-- MESSAGE & GREETING BOARD -->
+        <section id="ucapan" class="scroll-mt-20">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left Form Side -->
+                <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-rose-500/20 rounded-full blur-2xl"></div>
+                    
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="p-3 bg-white/10 rounded-2xl backdrop-blur-md">
+                            <i data-lucide="message-square-heart" class="w-6 h-6 text-rose-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold">Kirim Ucapan Terima Kasih</h3>
+                            <p class="text-xs text-slate-300">Sampaikan doa & apresiasi hangat untuk guru pilihanmu</p>
+                        </div>
+                    </div>
+
+                    <form id="greeting-form" onsubmit="handleSendGreeting(event)" class="space-y-4 relative z-10">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Nama Kamu (Siswa / Alumni)</label>
+                            <input type="text" id="sender-name" required placeholder="Contoh: Budi Santoso (Kelas XII)" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Ditujukan Kepada Guru</label>
+                            <select id="target-teacher" required class="w-full px-4 py-3 bg-slate-800 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-400">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Pesan & Kesan</label>
+                            <textarea id="greeting-message" required rows="4" placeholder="Terima kasih bapak/ibu guru yang selalu membimbing dan menginspirasi kami..." class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" id="send-msg-btn" class="w-full py-3.5 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 font-bold rounded-xl text-white shadow-lg shadow-rose-500/30 transition transform active:scale-95 flex items-center justify-center space-x-2">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            <span>Kirim Pesan Sekarang</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right Wall Side -->
+                <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl shadow-slate-100">
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">Dinding Ucapan & Apresiasi</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Pesan yang dikirimkan oleh siswa-siswi</p>
+                        </div>
+                        <span class="bg-rose-100 text-rose-700 text-xs font-bold px-3 py-1.5 rounded-full" id="greeting-count-badge">0 Pesan</span>
+                    </div>
+
+                    <div id="greetings-wall" class="space-y-4 max-h-[460px] overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Dynamic greetings render here -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 mt-20 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <div class="flex items-center justify-center space-x-2">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center text-white">
+                    <i data-lucide="heart" class="w-4 h-4"></i>
+                </div>
+                <span class="text-lg font-bold text-white">Selamat Hari Guru Nasional</span>
+            </div>
+            <p class="text-xs text-slate-500 max-w-md mx-auto">
+                "Terima kasih kepada seluruh Bapak dan Ibu Guru atas ilmu, keteladanan, serta kasih sayang yang telah dicurahkan untuk kami."
+            </p>
+            <div class="pt-4 border-t border-slate-800 text-xs text-slate-600">
+                &copy; 2026 Panitia Hari Guru Nasional. Hak Cipta Dilindungi. Prototype Interactive Standalone.
+            </div>
+        </div>
+    </footer>
+
+    <!-- CONFIRM VOTE MODAL -->
+    <div id="vote-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-100">
+            <div class="text-center">
+                <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="vote" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-1">Konfirmasi Voting</h3>
+                <p class="text-xs text-slate-500 mb-6">Apakah Anda yakin ingin memberikan suara kepada:</p>
+                
+                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 mb-6 text-left flex items-center space-x-4">
+                    <div id="modal-candidate-avatar" class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                        G
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-rose-600 uppercase tracking-wide" id="modal-candidate-category">Kategori</span>
+                        <h4 class="text-base font-bold text-slate-900 leading-snug" id="modal-candidate-name">Nama Guru</h4>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 rounded-xl p-3 text-amber-800 text-xs text-left mb-6 flex items-start space-x-2">
+                    <i data-lucide="info" class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5"></i>
+                    <span>Catatan: Anda hanya dapat memberikan <strong>1 suara</strong> di kategori ini.</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="closeVoteModal()" class="py-3 px-4 rounded-xl border border-slate-300 text-slate-700 font-semibold text-sm hover:bg-slate-100 transition">
+                        Batal
+                    </button>
+                    <button id="confirm-vote-btn" onclick="executeVote()" class="py-3 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-bold text-sm shadow-md shadow-rose-500/20 transition flex items-center justify-center space-x-2">
+                        <span>Ya, Berikan Suara</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN MODAL -->
+    <div id="admin-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                <div class="flex items-center space-x-2 text-slate-900 font-bold text-lg">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-indigo-600"></i>
+                    <span>Panel Admin Prototype</span>
+                </div>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Lock Step -->
+            <div id="admin-login-step" class="space-y-4">
+                <p class="text-xs text-slate-500">Masukkan kode akses admin untuk uji coba data. (Password: <code class="bg-slate-100 px-1.5 py-0.5 rounded text-rose-600 font-bold">perintah ketos</code>)</p>
+                <div>
+                    <input type="password" id="admin-password" placeholder="Kata Sandi Admin..." class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <button onclick="verifyAdminPassword()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl transition">
+                    Masuk Panel Admin
+                </button>
+            </div>
+
+            <!-- Panel Step -->
+            <div id="admin-panel-step" class="hidden space-y-6">
+                <div class="bg-indigo-50 border border-indigo-200 text-indigo-800 p-4 rounded-2xl text-xs flex items-center space-x-3">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-indigo-600 flex-shrink-0"></i>
+                    <div>
+                        <p class="font-bold">Login Admin Berhasil!</p>
+                        <p class="mt-0.5">Mode Uji Coba Standalone (LocalStorage Active).</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h4 class="text-sm font-bold text-slate-800">Manajemen Data & Testing Tool</h4>
+                    
+                    <button onclick="generateSimulatedVotes()" class="w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-2 transition shadow-md shadow-amber-500/20">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        <span>Isi Data Acak (Simulasi Vote Uji Coba)</span>
+                    </button>
+
+                    <button onclick="resetUserTokens()" class="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl flex items-center justify-center space-x-2 transition border border-slate-300">
+                        <i data-lucide="key" class="w-4 h-4 text-slate-600"></i>
+                        <span>Reset Status Voting Perangkat Ini (Bisa Vote Lagi)</span>
+                    </button>
+
+                    <button onclick="exportDataCSV()" class="w-full py-2.5 px-4 border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium text-xs rounded-xl flex items-center justify-center space-x-2 transition">
+                        <i data-lucide="download" class="w-4 h-4 text-slate-500"></i>
+                        <span>Download Rekap Voting (CSV)</span>
+                    </button>
+
+                    <button onclick="resetAllVotes()" class="w-full py-2.5 px-4 bg-rose-50 hover:bg-rose-100 text-rose-700 font-medium text-xs rounded-xl flex items-center justify-center space-x-2 transition border border-rose-200">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4 text-rose-600"></i>
+                        <span>Reset Seluruh Data Voting</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const CATEGORIES = [
+            { id: 'tergaul', name: 'Guru Tergaul', icon: 'sparkles', desc: 'Guru paling ramah, seru, kekinian, dan dekat dengan para siswa.' },
+            { id: 'terbaik', name: 'Guru Terbaik', icon: 'star', desc: 'Guru yang menjadi teladan utama dalam keilmuan, inspirasi, dan pengajaran.' }
+        ];
+
+        // Exact 25 Teachers
+        const TEACHERS_LIST = [
+            "Pak Wildan", "Pak Masroni", "Pak Fakhri", "Pak Zailani", "Pak Fauzi",
+            "Pak Ikrom", "Pak Vickry", "Pak Hilmi", "Pak Guntur", "Pak Suryadi",
+            "Pak Amar", "Pak Uslani", "Pak Kiki", "Bu Devi", "Bu Naila",
+            "Bu Ririn", "Bu Kurnia", "Bu Syarifah", "Bu Ima", "Bu Widi",
+            "Miss Ilfa", "Miss Dilla", "Ustadzah Hidyah", "Ustadz Syarif", "Ustadz Fata"
+        ];
+
+        // Avatar styling generator
+        function getAvatarGradient(name) {
+            if (name.startsWith('Bu') || name.startsWith('Miss') || name.startsWith('Ustadzah')) {
+                return 'from-rose-500 to-pink-600';
+            }
+            return 'from-indigo-500 to-blue-600';
+        }
+
+        const INITIAL_GREETINGS = [
+            {
+                id: 'g1',
+                sender: 'Rian (Kelas XII IPA 1)',
+                teacherName: 'Pak Wildan',
+                message: 'Selamat Hari Guru Pak Wildan! Terima kasih selalu seru dan sabar membimbing kami!',
+                timestamp: '10 menit yang lalu'
+            },
+            {
+                id: 'g2',
+                sender: 'Siti & Anisa',
+                teacherName: 'Bu Devi',
+                message: 'Selamat Hari Guru Bu Devi! Penjelasannya selalu mudah dipahami dan bikin kelas ceria.',
+                timestamp: '25 menit yang lalu'
+            },
+            {
+                id: 'g3',
+                sender: 'Ahmad Fathir',
+                teacherName: 'Ustadz Syarif',
+                message: 'Jazakallah khair Ustadz Syarif atas nasehat dan ilmunya yang sangat bermanfaat.',
+                timestamp: '1 jam yang lalu'
+            }
+        ];
+
+        /* ==========================================================================
+           STATE MANAGEMENT (LOCALSTORAGE)
+           ========================================================================== */
+        let votesData = JSON.parse(localStorage.getItem('hgn_prototype_votes')) || {};
+        
+        // Ensure initial structure
+        TEACHERS_LIST.forEach((name) => {
+            if (votesData[`tergaul_${name}`] === undefined) votesData[`tergaul_${name}`] = 0;
+            if (votesData[`terbaik_${name}`] === undefined) votesData[`terbaik_${name}`] = 0;
+        });
+
+        let userVotedCategories = JSON.parse(localStorage.getItem('hgn_prototype_user_voted')) || {};
+        let greetingsList = JSON.parse(localStorage.getItem('hgn_prototype_greetings')) || INITIAL_GREETINGS;
+
+        let currentCategory = 'tergaul';
+        let searchQuery = '';
+        let pendingVoteTeacher = null;
+
+        /* ==========================================================================
+           INITIALIZATION
+           ========================================================================== */
+        window.onload = function() {
+            updateTabStyles();
+            renderCandidates();
+            renderLeaderboard();
+            renderGreetings();
+            populateTeacherDropdown();
+            updateGlobalStats();
+            lucide.createIcons();
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ==========================================================================
+           UI RENDERING
+           ========================================================================== */
+        function switchCategory(catId) {
+            currentCategory = catId;
+            document.getElementById('leaderboard-category-filter').value = catId;
+            updateTabStyles();
+            renderCandidates();
+            renderLeaderboard();
+        }
+
+        function updateTabStyles() {
+            const btnTergaul = document.getElementById('tab-tergaul');
+            const btnTerbaik = document.getElementById('tab-terbaik');
+
+            if (currentCategory === 'tergaul') {
+                btnTergaul.className = "px-6 py-3 rounded-2xl font-bold text-sm bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-lg shadow-rose-500/25 transition-all duration-200 flex items-center space-x-2";
+                btnTerbaik.className = "px-6 py-3 rounded-2xl font-semibold text-sm bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all duration-200 flex items-center space-x-2";
+            } else {
+                btnTerbaik.className = "px-6 py-3 rounded-2xl font-bold text-sm bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25 transition-all duration-200 flex items-center space-x-2";
+                btnTergaul.className = "px-6 py-3 rounded-2xl font-semibold text-sm bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all duration-200 flex items-center space-x-2";
+            }
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+            renderCandidates();
+        }
+
+        function renderCandidates() {
+            const container = document.getElementById('candidates-container');
+            const filteredTeachers = TEACHERS_LIST.filter(name => name.toLowerCase().includes(searchQuery));
+
+            if (filteredTeachers.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-400 bg-white rounded-3xl border border-dashed border-slate-200">
+                        <i data-lucide="search-x" class="w-10 h-10 mx-auto mb-2 text-slate-300"></i>
+                        <p class="font-semibold text-sm">Guru dengan nama "${searchQuery}" tidak ditemukan.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            const isVotedInCategory = !!userVotedCategories[currentCategory];
+
+            container.innerHTML = filteredTeachers.map(name => {
+                const key = `${currentCategory}_${name}`;
+                const voteCount = votesData[key] || 0;
+                const isMyVote = userVotedCategories[currentCategory] === name;
+                const avatarGradient = getAvatarGradient(name);
+                const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2);
+
+                return `
+                    <div class="glass-card rounded-3xl border border-slate-200/80 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group p-5">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr ${avatarGradient} flex items-center justify-center text-white font-extrabold text-lg shadow-md flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                                ${initials}
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Kandidat</span>
+                                <h3 class="text-base font-bold text-slate-900 leading-tight">${name}</h3>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-3 mt-2 flex items-center justify-between">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-slate-400 block">Perolehan</span>
+                                <span class="text-sm font-extrabold text-slate-900 flex items-center gap-1">
+                                    <i data-lucide="thumbs-up" class="w-3.5 h-3.5 text-amber-500"></i>
+                                    ${voteCount} <span class="text-xs font-normal text-slate-500">suara</span>
+                                </span>
+                            </div>
+
+                            ${isMyVote ? `
+                                <button disabled class="px-3.5 py-2 bg-emerald-100 text-emerald-700 font-bold text-xs rounded-xl flex items-center space-x-1 cursor-default">
+                                    <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                                    <span>Pilihanmu</span>
+                                </button>
+                            ` : `
+                                <button onclick="openVoteModal('${name}')" ${isVotedInCategory ? 'disabled' : ''} class="px-4 py-2 rounded-xl font-bold text-xs transition-all duration-200 flex items-center space-x-1.5 ${
+                                    isVotedInCategory
+                                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                                    : 'bg-slate-900 hover:bg-rose-600 text-white shadow-md hover:shadow-rose-500/20 active:scale-95'
+                                }">
+                                    <i data-lucide="vote" class="w-3.5 h-3.5"></i>
+                                    <span>Vote</span>
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function renderLeaderboard() {
+            const filterCatId = document.getElementById('leaderboard-category-filter').value || currentCategory;
+            const container = document.getElementById('leaderboard-content');
+
+            const leaderboardList = TEACHERS_LIST.map(name => {
+                const key = `${filterCatId}_${name}`;
+                return { name, votes: votesData[key] || 0 };
+            });
+
+            const totalVotes = leaderboardList.reduce((acc, curr) => acc + curr.votes, 0);
+
+            // Sort descending
+            leaderboardList.sort((a, b) => b.votes - a.votes);
+
+            container.innerHTML = leaderboardList.map((item, index) => {
+                const percentage = totalVotes > 0 ? Math.round((item.votes / totalVotes) * 100) : 0;
+                
+                let rankBadge = `<span class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-xs">${index + 1}</span>`;
+                if (index === 0) rankBadge = `<span class="w-6 h-6 rounded-full bg-amber-400 text-white flex items-center justify-center font-bold text-xs shadow-md"><i data-lucide="trophy" class="w-3.5 h-3.5"></i></span>`;
+                if (index === 1) rankBadge = `<span class="w-6 h-6 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center font-bold text-xs">2</span>`;
+                if (index === 2) rankBadge = `<span class="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center font-bold text-xs">3</span>`;
+
+                return `
+                    <div class="space-y-1.5 p-3 rounded-2xl hover:bg-slate-50 transition border border-transparent hover:border-slate-100">
+                        <div class="flex items-center justify-between text-xs sm:text-sm font-semibold">
+                            <div class="flex items-center space-x-3">
+                                ${rankBadge}
+                                <span class="text-slate-800 font-bold">${item.name}</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-slate-900 font-extrabold">${item.votes} Suara</span>
+                                <span class="text-xs text-slate-400 font-normal ml-1">(${percentage}%)</span>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-amber-400 to-rose-500 rounded-full transition-all duration-700" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function populateTeacherDropdown() {
+            const select = document.getElementById('target-teacher');
+            select.innerHTML = '<option value="" disabled selected>Pilih Guru...</option>' + 
+                TEACHERS_LIST.map(name => `<option value="${name}">${name}</option>`).join('');
+        }
+
+        function renderGreetings() {
+            const container = document.getElementById('greetings-wall');
+            const badge = document.getElementById('greeting-count-badge');
+            badge.innerText = `${greetingsList.length} Pesan`;
+
+            if (greetingsList.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 text-slate-400 text-xs">Belum ada ucapan. Kirim ucapan pertama kamu!</div>`;
+                return;
+            }
+
+            container.innerHTML = greetingsList.map(g => `
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100/80 space-y-2 hover:border-rose-200 transition">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-7 h-7 rounded-full bg-rose-100 text-rose-600 font-bold text-xs flex items-center justify-center">
+                                ${g.sender ? g.sender.charAt(0).toUpperCase() : 'S'}
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-bold text-slate-800">${g.sender}</h5>
+                                <p class="text-[10px] text-rose-600 font-medium">Untuk: ${g.teacherName}</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] text-slate-400">${g.timestamp || 'Baru saja'}</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed italic">"${g.message}"</p>
+                </div>
+            `).join('');
+        }
+
+        function updateGlobalStats() {
+            const totalVotes = Object.values(votesData).reduce((a, b) => a + b, 0);
+            document.getElementById('stat-total-votes').innerText = totalVotes.toLocaleString('id-ID');
+            document.getElementById('stat-total-messages').innerText = greetingsList.length.toLocaleString('id-ID');
+        }
+
+        /* ==========================================================================
+           VOTING LOGIC
+           ========================================================================== */
+        function openVoteModal(teacherName) {
+            pendingVoteTeacher = teacherName;
+            const categoryObj = CATEGORIES.find(c => c.id === currentCategory);
+
+            const avatarContainer = document.getElementById('modal-candidate-avatar');
+            avatarContainer.className = `w-12 h-12 rounded-xl bg-gradient-to-tr ${getAvatarGradient(teacherName)} flex items-center justify-center text-white font-bold text-lg flex-shrink-0`;
+            avatarContainer.innerText = teacherName.split(' ').map(n => n[0]).join('').slice(0, 2);
+
+            document.getElementById('modal-candidate-name').innerText = teacherName;
+            document.getElementById('modal-candidate-category').innerText = categoryObj ? categoryObj.name : 'Voting Guru';
+
+            document.getElementById('vote-modal').classList.remove('hidden');
+        }
+
+        function closeVoteModal() {
+            document.getElementById('vote-modal').classList.add('hidden');
+            pendingVoteTeacher = null;
+        }
+
+        function executeVote() {
+            if (!pendingVoteTeacher) return;
+
+            const teacherName = pendingVoteTeacher;
+            const key = `${currentCategory}_${teacherName}`;
+            
+            votesData[key] = (votesData[key] || 0) + 1;
+            userVotedCategories[currentCategory] = teacherName;
+
+            localStorage.setItem('hgn_prototype_votes', JSON.stringify(votesData));
+            localStorage.setItem('hgn_prototype_user_voted', JSON.stringify(userVotedCategories));
+
+            // Confetti
+            confetti({
+                particleCount: 120,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            renderCandidates();
+            renderLeaderboard();
+            updateGlobalStats();
+
+            showToast(`Suara berhasil diberikan untuk ${teacherName}!`, 'success');
+            closeVoteModal();
+        }
+
+        function handleSendGreeting(e) {
+            e.preventDefault();
+            const sender = document.getElementById('sender-name').value.trim();
+            const teacherName = document.getElementById('target-teacher').value;
+            const message = document.getElementById('greeting-message').value.trim();
+
+            if (!sender || !teacherName || !message) {
+                showToast('Lengkapi seluruh isi formulir!', 'error');
+                return;
+            }
+
+            const newEntry = {
+                id: 'g_' + Date.now(),
+                sender,
+                teacherName,
+                message,
+                timestamp: 'Baru saja'
+            };
+
+            greetingsList.unshift(newEntry);
+            localStorage.setItem('hgn_prototype_greetings', JSON.stringify(greetingsList));
+
+            renderGreetings();
+            updateGlobalStats();
+            document.getElementById('greeting-form').reset();
+
+            showToast('Pesan berhasil terkirim ke dinding ucapan!', 'success');
+        }
+
+        /* ==========================================================================
+           ADMIN & TESTING UTILITIES
+           ========================================================================== */
+        function openAdminModal() {
+            document.getElementById('admin-modal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const pwd = document.getElementById('admin-password').value.trim().toLowerCase();
+            if (pwd === 'perintah ketos') {
+                document.getElementById('admin-login-step').classList.add('hidden');
+                document.getElementById('admin-panel-step').classList.remove('hidden');
+            } else {
+                showToast('Kata sandi admin salah!', 'error');
+            }
+        }
+
+        function generateSimulatedVotes() {
+            TEACHERS_LIST.forEach(name => {
+                votesData[`tergaul_${name}`] = (votesData[`tergaul_${name}`] || 0) + Math.floor(Math.random() * 25) + 5;
+                votesData[`terbaik_${name}`] = (votesData[`terbaik_${name}`] || 0) + Math.floor(Math.random() * 30) + 5;
+            });
+            localStorage.setItem('hgn_prototype_votes', JSON.stringify(votesData));
+
+            renderCandidates();
+            renderLeaderboard();
+            updateGlobalStats();
+            showToast('Simulasi data suara berhasil ditambahkan!', 'success');
+        }
+
+        function resetUserTokens() {
+            userVotedCategories = {};
+            localStorage.removeItem('hgn_prototype_user_voted');
+            renderCandidates();
+            showToast('Status voting perangkat ini telah di-reset. Anda bisa vote kembali.', 'info');
+        }
+
+        function exportDataCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,Kategori,Nama Guru,Jumlah Suara\n";
+
+            CATEGORIES.forEach(cat => {
+                TEACHERS_LIST.forEach(name => {
+                    const votes = votesData[`${cat.id}_${name}`] || 0;
+                    csvContent += `"${cat.name}","${name}",${votes}\n`;
+                });
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `prototype_rekap_voting_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showToast('File CSV rekap suara berhasil diunduh!', 'success');
+        }
+
+        function resetAllVotes() {
+            if (confirm("Yakin ingin meriset seluruh data voting dan pesan ucapan?")) {
+                TEACHERS_LIST.forEach(name => {
+                    votesData[`tergaul_${name}`] = 0;
+                    votesData[`terbaik_${name}`] = 0;
+                });
+                userVotedCategories = {};
+                greetingsList = [];
+
+                localStorage.setItem('hgn_prototype_votes', JSON.stringify(votesData));
+                localStorage.setItem('hgn_prototype_user_voted', JSON.stringify(userVotedCategories));
+                localStorage.setItem('hgn_prototype_greetings', JSON.stringify(greetingsList));
+
+                renderCandidates();
+                renderLeaderboard();
+                renderGreetings();
+                updateGlobalStats();
+
+                showToast('Seluruh data prototype berhasil dibersihkan.', 'info');
+                closeAdminModal();
+            }
+        }
+
+        /* ==========================================================================
+           TOAST SYSTEM
+           ========================================================================== */
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgClass = 'bg-slate-900 text-white';
+            let icon = 'info';
+
+            if (type === 'success') {
+                bgClass = 'bg-emerald-600 text-white';
+                icon = 'check-circle-2';
+            } else if (type === 'error') {
+                bgClass = 'bg-rose-600 text-white';
+                icon = 'alert-circle';
+            }
+
+            toast.className = `${bgClass} px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-2 text-xs font-semibold transform transition-all duration-300 translate-y-4 opacity-0 pointer-events-auto max-w-xs`;
+            toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 flex-shrink-0"></i><span>${message}</span>`;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => toast.classList.remove('translate-y-4', 'opacity-0'), 50);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
